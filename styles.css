@@ -82,10 +82,14 @@ body {
 
   #table-projetos {
     width:100%;
-    text-align: justify;
+    text-align: center;
   }
 
   #profile {
     width: 150px;
+    border-radius: 50%;
+  }
+  #slide {
+    width: 300px;
     border-radius: 50%;
   }
