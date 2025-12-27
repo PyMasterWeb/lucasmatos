@@ -83,7 +83,7 @@ body {
   #table-projetos {
     width:100%;
     text-align: justify;
-    font: bold;
+    text-emphasis-color: rgb(255, 1, 1);
   }
 
   #profile {
