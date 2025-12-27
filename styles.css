@@ -82,7 +82,8 @@ body {
 
   #table-projetos {
     width:100%;
-    text-align: center;
+    text-align: justify;
+    font: bold;
   }
 
   #profile {
