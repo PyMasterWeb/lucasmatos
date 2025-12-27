@@ -70,7 +70,6 @@ body {
     flex-wrap: wrap;
     justify-content: center;
   }
-  
   .item {
     background-color: #f0f0f0;
     padding: 20px;
@@ -84,4 +83,9 @@ body {
   #table-projetos {
     width:100%;
     text-align: center;
+  }
+
+  #profile {
+    width: 150px;
+    border-radius: 50%;
   }
