@@ -82,6 +82,7 @@ body {
 
   #table-projetos {
     width:100%;
+    height: 100%;
     text-align: center;
   }
 
@@ -91,6 +92,7 @@ body {
   }
 
   #slide {
+    display: flex;
     width: 300px;
     height: 300px;
     border-radius: 50%;
