@@ -50,9 +50,53 @@
     <section id="projetos" class="container"> 
       <div class="item"> 
     <h1>Meus Projetos</h1> 
-    <img id="foto" src="https://raw.githubusercontent.com/PyMasterWeb/REPO/main/aladog.png" class="rounded float-start" alt="A La Dog"> 
-    <img id="foto" src="https://raw.githubusercontent.com/PyMasterWeb/REPO/main/ccbr.png" class="rounded float-end" alt="Custo Certo Brasil"> 
-    <img id="foto" src="https://raw.githubusercontent.com/PyMasterWeb/REPO/main/rotas.png" class="rounded float-end" alt="Rotas e Festas"> 
+    <div id="carouselProjetos" class="carousel slide" data-bs-ride="carousel">
+      <div class="carousel-inner">
+    
+        <div class="carousel-item active text-center">
+          <img
+            src="https://raw.githubusercontent.com/PyMasterWeb/REPO/main/aladog.png"
+            class="d-block mx-auto img-fluid rounded"
+            alt="A La Dog"
+          >
+          <div class="carousel-caption d-none d-md-block">
+            <h5>A La Dog</h5>
+          </div>
+        </div>
+    
+        <div class="carousel-item text-center">
+          <img
+            src="https://raw.githubusercontent.com/PyMasterWeb/REPO/main/ccbr.png"
+            class="d-block mx-auto img-fluid rounded"
+            alt="Custo Certo Brasil"
+          >
+          <div class="carousel-caption d-none d-md-block">
+            <h5>Custo Certo Brasil</h5>
+          </div>
+        </div>
+    
+        <div class="carousel-item text-center">
+          <img
+            src="https://raw.githubusercontent.com/PyMasterWeb/REPO/main/rotas.png"
+            class="d-block mx-auto img-fluid rounded"
+            alt="Rotas e Festas"
+          >
+          <div class="carousel-caption d-none d-md-block">
+            <h5>Rotas e Festas</h5>
+          </div>
+        </div>
+    
+      </div>
+    
+      <button class="carousel-control-prev" type="button" data-bs-target="#carouselProjetos" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon"></span>
+      </button>
+    
+      <button class="carousel-control-next" type="button" data-bs-target="#carouselProjetos" data-bs-slide="next">
+        <span class="carousel-control-next-icon"></span>
+      </button>
+    </div>
+    
         <p>Aqui estão alguns dos projetos em que trabalhei:</p> 
       </div> 
     </section> 
