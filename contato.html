@@ -51,7 +51,30 @@
   </header>
   <main>
     <section id="contato" class="container">
-        <div class="item">
+      
+      <div class="form-floating mb-3">
+        <i class="bi bi-chat-right-heart-fill"></i>
+        <input type="email" class="form-control" id="floatingInputDisabled" placeholder="name@example.com">
+        <label for="floatingInputDisabled">Endereço de E-mail</label>
+      </div>
+      <div class="form-floating mb-3">
+        <textarea class="form-control" placeholder="Deixe um comentário" id="floatingTextareaDisabled" disabled></textarea>
+        <label for="floatingTextareaDisabled">Dúvidas</label>
+      </div>
+
+      <div class="form-floating">
+        <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
+          <option selected>Open this select menu</option>
+          <option value="1">Programação</option>
+          <option value="2">Direito Digital</option>
+          <option value="3">Desenvolvimento WEB</option>
+        </select>
+        <label for="floatingSelectDisabled">Selecione</label>
+      </div> 
+      
+
+
+      <div class="item">
       <h1>Contato</h1>
       <p>Envie-me uma mensagem através do formulário abaixo:</p>
       <form action="https://wa.me/5571992582476?text=" method="get" target="_blank">
@@ -61,6 +84,7 @@
         <button type="submit">Enviar via WhatsApp</button>
       </form>
         </div>
+
         <div class="alert alert-warning alert-dismissible fade show" role="alert">
           <strong>PARABÉNS!</strong> Você acaba de ganhar 1 sessão de mentoria acadêmica! Envie agora mesmo no formulário uma mensagem com a sua demanda e receba uma resposta personalizada ainda hoje!.
           <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
