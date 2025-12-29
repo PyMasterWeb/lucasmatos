@@ -120,3 +120,6 @@ body {
       background-color: rgb(24, 203, 226); /* Nova cor de fundo */
       color: rgb(0, 0, 0); /* Nova cor do texto */
   }
+  .paragrafo-justificado {
+    text-align: justify;
+  }
