@@ -92,4 +92,42 @@ body {
     border-radius: 50%;
   }
 
-  
+  bar {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        background-color: #333;
+    }
+
+    /* Estilo básico da navbar */
+    .navbar {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background-color: #333;
+  }
+
+  /* Estilo dos itens da navbar */
+  .nav-item {
+      float: left;
+  }
+
+  /* Estilo dos links */
+  .nav-item a {
+      display: block;
+      color: white;
+      text-align: center;
+      padding: 14px 16px;
+      text-decoration: none;
+      /* Define a transição suave para as propriedades 'background-color' e 'color' */
+      transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  /* Efeito ao passar o mouse (houver) */
+  .nav-item a:hover {
+      background-color: #555; /* Nova cor de fundo */
+      color: #4CAF50; /* Nova cor do texto */
+  }
+    
