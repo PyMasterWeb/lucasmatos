@@ -127,7 +127,7 @@ body {
 
   /* Efeito ao passar o mouse (houver) */
   .nav-item a:hover {
-      background-color: #555; /* Nova cor de fundo */
+      background-color: rgb(224, 64, 64); /* Nova cor de fundo */
       color: #4CAF50; /* Nova cor do texto */
   }
     
