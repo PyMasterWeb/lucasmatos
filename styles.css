@@ -8,7 +8,6 @@ body {
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    
   }
   
   nav ul {
@@ -90,14 +89,6 @@ body {
     width: 150px;
     border-radius: 50%;
   }
-
-  bar {
-        list-style-type: none;
-        margin: 0;
-        padding: 0;
-        overflow: hidden;
-        background-color: #333;
-    }
 
     /* Estilo básico da navbar */
     .navbar {
