@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cadastro</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+  <div class="container vh-100 d-flex justify-content-center align-items-center">
+    <div class="col-md-5">
+
+      <div class="card shadow">
+        <div class="card-body p-4">
+          <h3 class="text-center mb-4">Criar Conta</h3>
+
+          <form id="registerForm">
+            <div class="mb-3">
+              <label>E-mail</label>
+              <input type="email" id="email" class="form-control" required>
+            </div>
+
+            <div class="mb-3">
+              <label>Senha</label>
+              <input type="password" id="password" class="form-control" required>
+            </div>
+
+            <button class="btn btn-success w-100" type="submit">Cadastrar</button>
+          </form>
+
+          <p class="text-center mt-3">
+            Já tem conta? <a href="login.html">Entrar</a>
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+    const firebaseConfig = {
+                  apiKey: "AIzaSyBX_F3OlcdeWaRPS2USW1ts0s6whZm1i8E",
+                  authDomain: "login-site-lucasmatos.firebaseapp.com",
+                  projectId: "login-site-lucasmatos",
+                  appId: "1:369058484470:web:b41b0319a6f218174e1cd7"
+                };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    document.getElementById("registerForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+
+      createUserWithEmailAndPassword(auth, email, password)
+        .then(() => {
+          alert("Cadastro realizado com sucesso!");
+          window.location.href = "dashboard.html";
+        })
+        .catch(err => alert(err.message));
+    });
+  </script>
+</body>
+</html>
