@@ -116,3 +116,72 @@ body {
   .paragrafo-justificado {
     text-align: justify;
   }
+ 
+  .login-container {
+    width: 100%;
+    max-width: 380px;
+  }
+  
+  .login-box {
+    background: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+  }
+  
+  .login-box h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+  }
+  
+  .input-group {
+    margin-bottom: 15px;
+  }
+  
+  .input-group label {
+    display: block;
+    font-size: 14px;
+    margin-bottom: 5px;
+    color: #555;
+  }
+  
+  .input-group input {
+    width: 100%;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    outline: none;
+  }
+  
+  .input-group input:focus {
+    border-color: #1ccfd6;
+  }
+  
+  button {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    background: #1ccfd6;
+    color: #fff;
+    font-size: 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  
+  button:hover {
+    background: #17b3b8;
+  }
+  
+  .extra {
+    margin-top: 15px;
+    text-align: center;
+    font-size: 14px;
+  }
+  
+  .extra a {
+    color: #1ccfd6;
+    text-decoration: none;
+  }
+  
