@@ -15,7 +15,6 @@ body {
     margin: 0;
     padding: 0;
     text-align: center;
-    display: flex;
     justify-content: center;
   }
   
@@ -94,13 +93,8 @@ body {
       list-style-type: none;
       margin: 0;
       padding: 0;
-      overflow: hidden;
+      overflow: visible;
       background-color: #333;
-  }
-
-  /* Estilo dos itens da navbar */
-  .nav-item {
-      float: left;
   }
 
   /* Estilo dos links */
