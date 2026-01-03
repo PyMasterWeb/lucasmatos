@@ -42,42 +42,9 @@
             </li>
           </ul>
           <li class="nav-item">
-            <a class="nav-link" href="entrar.html">LOGIN</a>
+            <a class="nav-link" href="login.html">LOGIN</a>
           </li>
           
-            <script type="module">
-              import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-              import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-            
-              const firebaseConfig = {
-                apiKey: "AIzaSyBX_F3OlcdeWaRPS2USW1ts0s6whZm1i8E",
-                authDomain: "login-site-lucasmatos.firebaseapp.com",
-                projectId: "login-site-lucasmatos",
-                appId: "1:369058484470:web:b41b0319a6f218174e1cd7"
-              };
-            
-              const app = initializeApp(firebaseConfig);
-              const auth = getAuth(app);
-            
-              const form = document.getElementById("loginForm");
-            
-              form.addEventListener("submit", (e) => {
-                e.preventDefault();
-            
-                const email = document.getElementById("email").value;
-                const senha = document.getElementById("password").value;
-            
-                signInWithEmailAndPassword(auth, email, senha)
-                  .then(() => {
-                    alert("Login realizado com sucesso!");
-                    window.location.href = "dashboard.html";
-                  })
-                  .catch((error) => {
-                    alert("Erro: " + error.message);
-                  });
-              });
-            </script>
-
           </form>
         </div>
       </div>
