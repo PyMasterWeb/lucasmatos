@@ -14,12 +14,12 @@
     
     <div class="container-fluid">
       <span class="navbar-brand">Área do Aluno</span>
-      <a href="index.html" id="logoutBtn" class="btn btn-outline-light btn-sm">Sair</a>>
+      <a href="index.html" id="logoutBtn" class="btn btn-outline-light btn-sm">Sair</a>
     </div>
   </nav>
 
   <!-- CONTEÚDO PRINCIPAL -->
-  <div class="container mt-4">
+  <div id="conteudoDashboard" style="display:none;" class="container mt-4">
 
     <h2 class="mb-4" >📚 Meus Conteúdos</h2>
 
@@ -81,9 +81,7 @@
   
     const auth = getAuth();
   
-    // Mostra conteúdo apenas após determinar o estado
-    document.body.style.display = "none";
-  
+ 
     onAuthStateChanged(auth, (user) => {
       if (user) {
         // Usuário autenticado: mostra a página/parte protegida
