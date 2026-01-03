@@ -185,3 +185,21 @@ body {
     text-decoration: none;
   }
   
+  .item {
+    background-color: #a4bacf;
+    padding: 20px;
+    margin: 10px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  
+    /* 🔹 animação suave */
+    transition: background-color 0.3s ease, 
+                transform 0.3s ease, 
+                box-shadow 0.3s ease;
+  }
+  
+  .item:hover {
+    background-color: #e3f2fd; /* cor ao passar o mouse */
+    transform: translateY(-5px); /* levanta levemente */
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+  }
