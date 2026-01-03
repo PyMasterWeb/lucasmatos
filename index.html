@@ -42,8 +42,64 @@
             </li>
           </ul>
           <form class="d-flex" role="search">
-            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search"/>
-            <button class="btn btn-outline-success" type="submit">Search</button>
+          
+            <div class="login-container" class="col-md-4">
+              <form id="loginForm" class="login-box">
+                <h2>Entrar</h2>
+            
+                <div class="mb-3">
+                  <label for="email">E-mail</label>
+                  <input type="email" id="email" class="form-control"
+                         placeholder="Digite seu e-mail" required>
+                </div>
+            
+                <div class="mb-3">
+                  <label for="password">Senha</label>
+                  <input type="password" id="password" class="form-control"
+                         placeholder="Digite sua senha" required>
+                </div>
+            
+                <button type="submit" class="btn btn-primary w-100">Login</button>
+            
+                <p class="extra mt-3 text-center">
+                  Não tem conta? <a href="cadastro.html" style="color: red;">Cadastre-se</a>
+                </p>
+              </form>
+            </div>
+            
+            <script type="module">
+              import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+              import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+            
+              const firebaseConfig = {
+                apiKey: "AIzaSyBX_F3OlcdeWaRPS2USW1ts0s6whZm1i8E",
+                authDomain: "login-site-lucasmatos.firebaseapp.com",
+                projectId: "login-site-lucasmatos",
+                appId: "1:369058484470:web:b41b0319a6f218174e1cd7"
+              };
+            
+              const app = initializeApp(firebaseConfig);
+              const auth = getAuth(app);
+            
+              const form = document.getElementById("loginForm");
+            
+              form.addEventListener("submit", (e) => {
+                e.preventDefault();
+            
+                const email = document.getElementById("email").value;
+                const senha = document.getElementById("password").value;
+            
+                signInWithEmailAndPassword(auth, email, senha)
+                  .then(() => {
+                    alert("Login realizado com sucesso!");
+                    window.location.href = "dashboard.html";
+                  })
+                  .catch((error) => {
+                    alert("Erro: " + error.message);
+                  });
+              });
+            </script>
+
           </form>
         </div>
       </div>
@@ -63,62 +119,7 @@
           </div>
 
 
-              <div class="login-container" class="col-md-4">
-                <form id="loginForm" class="login-box">
-                  <h2>Entrar</h2>
-              
-                  <div class="mb-3">
-                    <label for="email">E-mail</label>
-                    <input type="email" id="email" class="form-control"
-                           placeholder="Digite seu e-mail" required>
-                  </div>
-              
-                  <div class="mb-3">
-                    <label for="password">Senha</label>
-                    <input type="password" id="password" class="form-control"
-                           placeholder="Digite sua senha" required>
-                  </div>
-              
-                  <button type="submit" class="btn btn-primary w-100">Login</button>
-              
-                  <p class="extra mt-3 text-center">
-                    Não tem conta? <a href="cadastro.html" style="color: red;">Cadastre-se</a>
-                  </p>
-                </form>
-              </div>
-              
-              <script type="module">
-                import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-                import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-              
-                const firebaseConfig = {
-                  apiKey: "AIzaSyBX_F3OlcdeWaRPS2USW1ts0s6whZm1i8E",
-                  authDomain: "login-site-lucasmatos.firebaseapp.com",
-                  projectId: "login-site-lucasmatos",
-                  appId: "1:369058484470:web:b41b0319a6f218174e1cd7"
-                };
-              
-                const app = initializeApp(firebaseConfig);
-                const auth = getAuth(app);
-              
-                const form = document.getElementById("loginForm");
-              
-                form.addEventListener("submit", (e) => {
-                  e.preventDefault();
-              
-                  const email = document.getElementById("email").value;
-                  const senha = document.getElementById("password").value;
-              
-                  signInWithEmailAndPassword(auth, email, senha)
-                    .then(() => {
-                      alert("Login realizado com sucesso!");
-                      window.location.href = "dashboard.html";
-                    })
-                    .catch((error) => {
-                      alert("Erro: " + error.message);
-                    });
-                });
-              </script>
+
               
     </section>
   </main>
