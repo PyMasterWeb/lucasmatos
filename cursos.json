@@ -3,6 +3,7 @@
       "id": 1,
       "titulo": "HTML do Zero",
       "descricao": "Aprenda HTML na prática",
-      "pdf": "https://raw.githubusercontent.com/PyMasterWeb/lucasmatos/main/neuroaprendizagem.pdf"
+      "pdf": "https://raw.githubusercontent.com/PyMasterWeb/lucasmatos/main/neuroaprendizagem.pdf",
+      "download": true
     }
 ]
