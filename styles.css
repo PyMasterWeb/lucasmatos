@@ -127,6 +127,7 @@ body {
     padding: 30px;
     border-radius: 10px;
     box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    align-items: center;
   }
   
   .login-box h2 {
@@ -203,3 +204,21 @@ body {
     transform: translateY(-5px); /* levanta levemente */
     box-shadow: 0 8px 20px rgba(0,0,0,0.2);
   }
+
+#startButton {
+			display: block;
+			width: 160px;
+			height: 40px;
+			background-color: #4CAF50;
+			color: white;
+			text-align: center;
+			text-decoration: none;
+			font-size: 16px;
+			margin: 20px auto;
+			padding: 10px 20px;
+			border: none;
+			border-radius: 8px;
+			cursor: pointer;
+			font-family: 'Press Start 2P', cursive;
+			box-shadow: 0px 0px 10px 2px #000000;
+		}
