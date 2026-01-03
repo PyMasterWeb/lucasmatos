@@ -3,12 +3,5 @@
       "id": 1,
       "titulo": "HTML do Zero",
       "descricao": "Aprenda HTML na prática",
-      "pdf": "https://raw.githubusercontent.com/.../aula1.pdf"
+      "pdf": "https://raw.githubusercontent.com/PyMasterWeb/lucasmatos/main/neuroaprendizagem.pdf"
     },
-    {
-      "id": 2,
-      "titulo": "CSS Moderno",
-      "descricao": "Flexbox, Grid e animações",
-      "pdf": "https://raw.githubusercontent.com/.../aula2.pdf"
-    }
-  ]
