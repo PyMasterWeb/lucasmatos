@@ -118,3 +118,34 @@ main {
   border-radius: 50%;
   margin-bottom: 16px;
 }
+
+
+/* =========================
+   TELA DE JOGOS
+========================= */
+
+.game-screen {
+  min-height: calc(100vh - 80px); /* altura total menos navbar */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Botão PLAY */
+.play-button {
+  padding: 14px 40px;
+  font-size: 18px;
+  font-weight: bold;
+  border-radius: 10px;
+  background: #4CAF50;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.play-button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+}
+
