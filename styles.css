@@ -223,4 +223,18 @@ body {
 			cursor: pointer;
 			font-family: 'Press Start 2P', cursive;
 			box-shadow: 0px 0px 10px 2px #000000;
-		}
+    }
+    
+    /* imagem pequena na página */
+.img-preview {
+  max-width: 220px;   /* ajuste aqui */
+  width: 100%;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.img-preview:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+}
+
