@@ -104,9 +104,15 @@ body {
       text-align: center;
       padding: 14px 16px;
       text-decoration: none;
-      /* Define a transição suave para as propriedades 'background-color' e 'color' */
+            /* Define a transição suave para as propriedades 'background-color' e 'color' */
       transition: background-color 0.3s ease, color 0.3s ease;
   }
+
+  .nav-login {
+    margin-left: auto; /* Empurra o item para a direita */
+  }
+
+
 
   /* Efeito ao passar o mouse (houver) */
   .nav-item a:hover {
