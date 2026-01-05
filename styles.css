@@ -227,7 +227,7 @@ body {
     
     /* imagem pequena na página */
 .img-preview {
-  max-width: 220px;   /* ajuste aqui */
+  max-width: 420px;   /* ajuste aqui */
   width: 100%;
   cursor: pointer;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
