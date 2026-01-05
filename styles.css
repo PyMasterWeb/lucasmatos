@@ -1,242 +1,98 @@
-/* Estilos gerais */
+/* =========================
+   BASE GLOBAL (MOBILE FIRST)
+========================= */
+
+* {
+  box-sizing: border-box;
+}
+
 body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    padding-top: 70px;
-    background-color: #f9f9f9;
-    background-image: url("https://raw.githubusercontent.com/PyMasterWeb/REPO/refs/heads/main/postura-plana-conceito-de-mesa-com-espaco-de-copia.jpg");
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-  }
-  
-  nav ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    position: fixed;
-  }
-  
-  body nav ul {
-    display: block;
-  }
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f9f9f9;
+  background-image: url("https://raw.githubusercontent.com/PyMasterWeb/REPO/refs/heads/main/postura-plana-conceito-de-mesa-com-espaco-de-copia.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
 
-  nav ul li {
-    margin: 0 15px;
-  }
-  
-  nav ul li a {
-    color: #fff;
-    text-decoration: none;
-  }
-  
-  main {
-    padding: 20px;
-    text-align: center;
-    height: 100%;
-  }
-  
-  footer {
-    background-color: #333;
-    color: #fff;
-    text-align: center;
-    padding: 5px 0;
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-  }
-  
-  form {
-    display: inline-block;
-    text-align: left;
-  }
-  
-  form label {
-    display: block;
-    margin-top: 10px;
-  }
-  
-  form textarea {
-    width: 100%;
-    max-width: 500px;
-  }
-  
-  /* Layouts de Seções */
-  section {
-    margin: 20px 0;
-  }
-  
-  .container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-  .item {
-    background-color: #f0f0f0;
-    padding: 20px;
-    margin: 10px;
-    flex: 1 1 300px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
+/* Espaço real para navbar fixa */
+main {
+  margin-top: 80px;
+  padding: 16px;
+  text-align: center;
+}
+/* =========================
+   NAVBAR (AJUSTES FINOS)
+========================= */
 
-  #table-projetos {
-    width:100%;
-    height: 100%;
-    text-align: center;
-  }
+.navbar {
+  background-color: #ffffff;
+  border-bottom: 1px solid #ddd;
+}
 
-  #profile {
-    width: 150px;
-    border-radius: 50%;
-  }
+.navbar-brand {
+  font-weight: 600;
+}
 
-    /* Estilo básico da navbar */
-    .navbar {
-      list-style-type: none;
-      margin: 0;
-      padding: 0;
-      overflow: visible;
-      background-color: #333;
-  }
+.navbar-nav {
+  flex-wrap: nowrap;
+}
 
-  /* Estilo dos links */
-  .nav-item a {
-      display: block;
-      color: gray;
-      text-align: center;
-      padding: 14px 16px;
-      text-decoration: none;
-            /* Define a transição suave para as propriedades 'background-color' e 'color' */
-      transition: background-color 0.3s ease, color 0.3s ease;
-  }
+.navbar .nav-link {
+  padding: 6px 8px;
+  font-size: 14px;
+  white-space: nowrap;
+  color: #333;
+  transition: color 0.2s ease;
+}
 
-  /* Efeito ao passar o mouse (houver) */
-  .nav-item a:hover {
-      background-color: rgb(24, 203, 226); /* Nova cor de fundo */
-      color: rgb(0, 0, 0); /* Nova cor do texto */
-  }
-  .paragrafo-justificado {
-    text-align: justify;
-  }
- 
-  .login-container {
-    width: 100%;
-    max-width: 380px;
-  }
-  
-  .login-box {
-    background: rgb(151, 255, 224);
-    padding: 30px;
-    border-radius: 10px;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-    background-position: center;
-  }
-  
-  .login-box h2 {
-    text-align: center;
-    margin-bottom: 20px;
-    color: #333;
-  }
-  
-  .input-group {
-    margin-bottom: 15px;
-  }
-  
-  .input-group label {
-    display: block;
-    font-size: 14px;
-    margin-bottom: 5px;
-    color: #555;
-  }
-  
-  .input-group input {
-    width: 100%;
-    padding: 10px;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-    outline: none;
-  }
-  
-  .input-group input:focus {
-    border-color: #1ccfd6;
-  }
-  
-  button {
-    width: 100%;
-    padding: 12px;
-    border: none;
-    background: #3359d4;
-    color: #fff;
-    font-size: 16px;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: 0.3s;
-  }
-  
-  button:hover {
-    background: #17b3b8;
-  }
-  
-  .extra {
-    margin-top: 15px;
-    text-align: center;
-    font-size: 14px;
-  }
-  
-  .extra a {
-    color: #da1c1c;
-    text-decoration: none;
-  }
-  
-  .item {
-    background-color: #a4bacf;
-    padding: 20px;
-    margin: 10px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-  
-    /* 🔹 animação suave */
-    transition: background-color 0.3s ease, 
-                transform 0.3s ease, 
-                box-shadow 0.3s ease;
-  }
-  
-  .item:hover {
-    background-color: #e3f2fd; /* cor ao passar o mouse */
-    transform: translateY(-5px); /* levanta levemente */
-    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-  }
+.navbar .nav-link:hover {
+  color: #0d6efd;
+}
+/* =========================
+   MENU LATERAL (OFFCANVAS)
+========================= */
 
-#startButton {
-			display: block;
-			width: 160px;
-			height: 40px;
-			background-color: #4CAF50;
-			color: white;
-			text-align: center;
-			text-decoration: none;
-			font-size: 16px;
-			margin: 20px auto;
-			padding: 10px 20px;
-			border: none;
-			border-radius: 8px;
-			cursor: pointer;
-			font-family: 'Press Start 2P', cursive;
-			box-shadow: 0px 0px 10px 2px #000000;
-    }
-    
-    /* imagem pequena na página */
-.img-preview {
-  max-width: 420px;   /* ajuste aqui */
-  width: 100%;
-  cursor: pointer;
+.offcanvas {
+  width: 240px;
+}
+
+.offcanvas-title {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.list-group-item a {
+  color: #333;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.list-group-item a:hover {
+  color: #0d6efd;
+}
+/* =========================
+   CONTEÚDO
+========================= */
+
+.container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.item {
+  background-color: #a4bacf;
+  padding: 20px;
+  margin: 10px;
+  border-radius: 8px;
+  flex: 1 1 100%;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.img-preview:hover {
-  transform: scale(1.05);
-  box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+.item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
 }
-
