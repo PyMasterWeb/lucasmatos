@@ -11,11 +11,11 @@
 <body>
   <!-- CONFIGURAÇÃO NAVBAR -->
   <header>
-    <nav class="navbar bg-body-tertiary fixed-top">
-      <div class="container-fluid d-flex align-items-center">
+    <nav class="navbar fixed-top bg-white border-bottom">
+      <div class="container-fluid">
   
-        <!-- BOTÃO MENU LATERAL (sempre à esquerda no mobile) -->
-        <button class="btn btn-outline-secondary d-lg-none me-2"
+        <!-- BOTÃO ☰ SEMPRE À ESQUERDA -->
+        <button class="btn btn-outline-secondary me-2"
                 type="button"
                 data-bs-toggle="offcanvas"
                 data-bs-target="#menuLateral"
@@ -24,10 +24,10 @@
         </button>
   
         <!-- LOGO -->
-        <a class="navbar-brand me-auto" href="index.html">LM Tech</a>
+        <span class="navbar-brand mb-0 h1">LM Tech</span>
   
         <!-- MENU PRINCIPAL (VISÍVEL NO MOBILE) -->
-        <ul class="navbar-nav flex-row gap-3 d-none d-sm-flex">
+        <ul class="navbar-nav flex-row ms-auto gap-3">
           <li class="nav-item">
             <a class="nav-link" href="index.html">Home</a>
           </li>
@@ -35,56 +35,57 @@
             <a class="nav-link" href="sobre.html">Sobre</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="projetos.html">Projetos</a>
+            <a class="nav-link" href="contato.html">Contato</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="contato.html">Contato</a>
+            <a class="nav-link fw-semibold" href="login.html">Login</a>
           </li>
         </ul>
   
       </div>
     </nav>
   </header>
-    
+      
   <!-- MENU LATERAL (OFFCANVAS) -->
   <!-- Abre pela esquerda e não bagunça o layout -->
-  <div class="offcanvas offcanvas-start" tabindex="-1" id="menuLateral">
-    <div class="offcanvas-header">
-      <h5 class="offcanvas-title">Mais opções</h5>
-      <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
-    </div>
+  <div class="offcanvas offcanvas-start"
+  tabindex="-1"
+  id="menuLateral"
+  style="width: 240px;">
   
-    <div class="offcanvas-body">
-      <ul class="navbar-nav">
-  
-        <!-- CONQUISTAS -->
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle"
-             href="#"
-             data-bs-toggle="dropdown">
-            Conquistas
-          </a>
-          <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="https://revista.mpm.mp.br/rmpm/article/view/470">Artigo Publicado</a></li>
-            <li><a class="dropdown-item" href="https://padlet.com/spidel/painel-da-turma-rovqegqyd7bodueq/slideshow/wish/3473143873">Pesquisador USP-Itaú</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="http://lattes.cnpq.br/4712568931708281">Currículo Lattes</a></li>
-          </ul>
-        </li>
-  
-        <!-- JOGOS -->
-        <li class="nav-item">
-          <a class="nav-link" href="jogos.html">Jogos</a>
-        </li>
-  
-        <!-- LOGIN -->
-        <li class="nav-item">
-          <a class="nav-link" href="login.html">Login</a>
-        </li>
-  
-      </ul>
-    </div>
-  </div>  
+<div class="offcanvas-header">
+ <h6 class="offcanvas-title">Outras opções</h6>
+ <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+</div>
+
+<div class="offcanvas-body p-0">
+ <ul class="list-group list-group-flush">
+
+   <li class="list-group-item">
+     <a href="projetos.html" class="text-decoration-none">Projetos</a>
+   </li>
+
+   <li class="list-group-item">
+     <a href="jogos.html" class="text-decoration-none">Jogos</a>
+   </li>
+
+   <li class="list-group-item">
+     <a href="https://revista.mpm.mp.br/rmpm/article/view/470"
+        class="text-decoration-none">
+       Artigo Publicado
+     </a>
+   </li>
+
+   <li class="list-group-item">
+     <a href="http://lattes.cnpq.br/4712568931708281"
+        class="text-decoration-none">
+       Currículo Lattes
+     </a>
+   </li>
+
+ </ul>
+</div>
+</div>
 </header>
   <main>
     <!-- CONFIGURAÇÃO DO CARD DE CHAMADA -->
