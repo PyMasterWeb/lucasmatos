@@ -14,10 +14,12 @@ body {
     list-style-type: none;
     margin: 0;
     padding: 0;
-    text-align: center;
-    justify-content: center;
   }
   
+  body nav ul {
+    display: block;
+  }
+
   nav ul li {
     margin: 0 15px;
   }
