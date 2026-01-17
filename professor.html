@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+  <!-- NAVBAR DO DASHBOARD -->
+  <nav class="navbar navbar-dark bg-dark">
+    
+    <div class="container-fluid">
+      <span class="navbar-brand">Área do Professor</span>
+      <a href="index.html" id="logoutBtn" class="btn btn-outline-light btn-sm">Sair</a>
+    </div>
+  </nav>
+
+  <!-- CONTEÚDO PRINCIPAL -->
+  <div class="container mt-4">
+
+    <h2 class="mb-4" >📚 Meus Conteúdos</h2>
+
+    <div class="row g-4">
+
+      <!-- CARD CURSO -->
+      <div class="col-md-4">
+        <div class="card shadow-sm h-100">
+          <div class="card-body" class="item">
+            <h5 class="card-title">Teste o Jogo</h5>
+            <p class="card-text">Street Fighter 2 Turbo - SNES</p>
+            <a href="streetfighter.html" class="btn btn-primary w-100" class="nav-link">Acessar</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- CARD DOWNLOAD -->
+      <div class="col-md-4">
+        <div class="card shadow-sm h-100">
+          <div class="card-body">
+            <h5 class="card-title">Material PDF</h5>
+            <p class="card-text">Apostilas e exercícios.</p>
+            <a href="https://raw.githubusercontent.com/PyMasterWeb/lucasmatos/main/neuroaprendizagem.pdf" class="btn btn-success w-100" class="nav-link" download>Download</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- CARD VÍDEO -->
+      <div class="col-md-4">
+        <div class="card shadow-sm h-100">
+          <div class="card-body">
+            <h5 class="card-title" >Aula Introdutória do Blockly - Google</h5>
+            <p class="card-text">Conteúdos exclusivos para alunos.</p>
+            <a href="https://www.youtube.com/watch?v=4gKcHlh24I8" class="btn btn-danger w-100" class="nav-link">Assistir</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+  
+    // Sua configuração do Firebase
+    const firebaseConfig = {
+                  apiKey: "AIzaSyBX_F3OlcdeWaRPS2USW1ts0s6whZm1i8E",
+                  authDomain: "login-site-lucasmatos.firebaseapp.com",
+                  projectId: "login-site-lucasmatos",
+                  appId: "1:369058484470:web:b41b0319a6f218174e1cd7"
+                };
+  
+    // Inicializa o Firebase
+    const app = initializeApp(firebaseConfig);
+  
+    const auth = getAuth();
+  
+ 
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // Usuário autenticado: mostra a página/parte protegida
+        document.body.style.display = "";
+        // Pode carregar dados do usuário, etc.
+      } else {
+        // Não autenticado: redireciona
+        window.location.href = "index.html";
+      }
+    });
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

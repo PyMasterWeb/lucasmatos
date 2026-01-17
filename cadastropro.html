@@ -31,7 +31,7 @@
           </form>
 
           <p class="text-center mt-3">
-            Já tem conta? <a href="loginaluno.html">Entrar</a>
+            Já tem conta? <a href="login.html">Entrar</a>
           </p>
         </div>
       </div>
@@ -62,7 +62,7 @@
       createUserWithEmailAndPassword(auth, email, password)
         .then(() => {
           alert("Cadastro realizado com sucesso!");
-          window.location.href = "loginaluno.html";
+          window.location.href = "loginpro.html";
         })
         .catch(err => alert(err.message));
     });

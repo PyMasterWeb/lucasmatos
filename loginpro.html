@@ -38,7 +38,7 @@
 
           <p class="mt-3 text-center">
             Não tem conta?
-            <a href="cadastro.html" class="text-danger">Cadastre-se</a>
+            <a href="cadastropro.html" class="text-danger">Cadastre-se</a>
           </p>
 
         </form>
@@ -73,7 +73,7 @@
     signInWithEmailAndPassword(auth, email, senha)
       .then(() => {
         alert("Login realizado com sucesso!");
-        window.location.href = "dashboard.html";
+        window.location.href = "professor.html";
       })
       .catch((error) => {
         alert("Erro: " + error.message);
