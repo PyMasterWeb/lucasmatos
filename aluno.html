@@ -4,92 +4,267 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard</title>
-
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body class="bg-light">
-
   <!-- NAVBAR DO DASHBOARD -->
   <nav class="navbar navbar-dark bg-dark">
     
     <div class="container-fluid">
       <span class="navbar-brand">Área do Aluno</span>
-      <a href="index.html" id="logoutBtn" class="btn btn-outline-light btn-sm">Sair</a>
+      <button id="logoutBtn" class="btn btn-outline-light btn-sm">Sair</button>
     </div>
   </nav>
-
   <!-- CONTEÚDO PRINCIPAL -->
   <div class="container mt-4">
-
     <h2 class="mb-4" >📚 Meus Conteúdos</h2>
-
     <div class="row g-4">
 
-      <!-- CARD CURSO -->
-      <div class="col-md-4">
-        <div class="card shadow-sm h-100">
-          <div class="card-body" class="item">
-            <h5 class="card-title">Teste o Jogo</h5>
-            <p class="card-text">Street Fighter 2 Turbo - SNES</p>
-            <a href="streetfighter.html" class="btn btn-primary w-100" class="nav-link">Acessar</a>
-          </div>
+<h3 class="mb-3">📘 Disciplinas</h3>
+
+<div class="row g-3">
+  <div class="col-md-3">
+    <a href="6ano.html" class="text-decoration-none">
+      <div class="card shadow-sm h-100">
+        <div class="card-body text-center">
+          <h6>Português</h6>
         </div>
       </div>
-
-      <!-- CARD DOWNLOAD -->
-      <div class="col-md-4">
-        <div class="card shadow-sm h-100">
-          <div class="card-body">
-            <h5 class="card-title">Material PDF</h5>
-            <p class="card-text">Apostilas e exercícios.</p>
-            <a href="https://raw.githubusercontent.com/PyMasterWeb/lucasmatos/main/neuroaprendizagem.pdf" class="btn btn-success w-100" class="nav-link" download>Download</a>
-          </div>
-        </div>
-      </div>
-
-      <!-- CARD VÍDEO -->
-      <div class="col-md-4">
-        <div class="card shadow-sm h-100">
-          <div class="card-body">
-            <h5 class="card-title" >Aula Introdutória do Blockly - Google</h5>
-            <p class="card-text">Conteúdos exclusivos para alunos.</p>
-            <a href="https://www.youtube.com/watch?v=4gKcHlh24I8" class="btn btn-danger w-100" class="nav-link">Assistir</a>
-          </div>
-        </div>
-      </div>
-
-    </div>
+    </a>
   </div>
+
+  <div class="col-md-3">
+    <a href="disciplina.html?d=matematica" class="text-decoration-none">
+      <div class="card shadow-sm h-100">
+        <div class="card-body text-center">
+          <h6>Matemática</h6>
+        </div>
+      </div>
+    </a>
+  </div>
+
+  <div class="col-md-3">
+    <a href="disciplina.html?d=ciencias" class="text-decoration-none">
+      <div class="card shadow-sm h-100">
+        <div class="card-body text-center">
+          <h6>Ciências</h6>
+        </div>
+      </div>
+    </a>
+  </div>
+</div>
+
+<div class="row g-3">
+  <div class="col-md-3">
+    <a href="disciplina.html?d=portugues" class="text-decoration-none">
+      <div class="card shadow-sm h-100">
+        <div class="card-body text-center">
+          <h6>História</h6>
+        </div>
+      </div>
+    </a>
+  </div>
+
+  <div class="col-md-3">
+    <a href="disciplina.html?d=matematica" class="text-decoration-none">
+      <div class="card shadow-sm h-100">
+        <div class="card-body text-center">
+          <h6>Geografia</h6>
+        </div>
+      </div>
+    </a>
+  </div>
+
+  <div class="col-md-3">
+    <a href="disciplina.html?d=ciencias" class="text-decoration-none">
+      <div class="card shadow-sm h-100">
+        <div class="card-body text-center">
+          <h6>Artes</h6>
+        </div>
+      </div>
+    </a>
+  </div>
+</div>
+
+<div class="row g-3">
+  <div class="col-md-3">
+    <a href="disciplina.html?d=portugues" class="text-decoration-none">
+      <div class="card shadow-sm h-100">
+        <div class="card-body text-center">
+          <h6>Educação Física</h6>
+        </div>
+      </div>
+    </a>
+  </div>
+
+  <div class="col-md-3">
+    <a href="disciplina.html?d=matematica" class="text-decoration-none">
+      <div class="card shadow-sm h-100">
+        <div class="card-body text-center">
+          <h6>Ética</h6>
+        </div>
+      </div>
+    </a>
+  </div>
+
+  <div class="col-md-3">
+    <a href="disciplina.html?d=ciencias" class="text-decoration-none">
+      <div class="card shadow-sm h-100">
+        <div class="card-body text-center">
+          <h6>Socioemocional</h6>
+        </div>
+      </div>
+    </a>
+  </div>
+</div>
+
+
+
+
+
+<h4>Materiais disponíveis
+  <button class="btn btn-sm btn-secondary" onclick="carregarArquivos()">🔄 Recarregar</button>
+</h4>
+<div id="infoTurma" class="alert alert-info"></div>
+<ul id="listaArquivos" class="list-group"></ul>
+<script>
+let turmaAluno = '';
+
+// Obter turma do aluno logado
+async function obterTurmaAluno(email) {
+  const { data, error } = await supabaseClient
+    .from('alunos')
+    .select('turma, nome')
+    .eq('email', email)
+    .single()
+
+  if (error) {
+    console.error('Erro ao obter turma:', error)
+    if (error.code === 'PGRST116') {
+      // Nenhum registro encontrado
+      document.getElementById('infoTurma').innerHTML = `⚠️ Aluno não encontrado no sistema.<br>
+        <small>Por favor, faça seu cadastro primeiro em <a href="cadastro.html">cadastro.html</a></small>`
+    } else {
+      document.getElementById('infoTurma').innerHTML = '⚠️ Erro ao carregar seus dados: ' + error.message
+    }
+    return null
+  }
+
+  return data
+}
+
+async function carregarArquivos() {
+  // Se turma ainda não foi carregada, carregar agora
+  if (!turmaAluno) {
+    const session = await supabaseClient.auth.getSession()
+    if (!session.data.session) {
+      document.getElementById('infoTurma').innerHTML = '⚠️ Você precisa estar autenticado'
+      return
+    }
+
+    const alunoData = await obterTurmaAluno(session.data.session.user.email)
+    if (!alunoData) return
+
+    turmaAluno = alunoData.turma
+    document.getElementById('infoTurma').innerHTML = `📚 Turma: <strong>${turmaAluno === '6ano' ? '6º Ano' : turmaAluno === '7ano' ? '7º Ano' : turmaAluno === '8ano' ? '8º Ano' : '9º Ano'}</strong>`
+  }
+
+  const lista = document.getElementById('listaArquivos')
+  lista.innerHTML = ''
+
+  console.log('📁 Procurando arquivos para turma:', turmaAluno)
+
+  let arquivosEncontrados = 0
   
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+  // Tipos de conteúdo que queremos listar
+  const tipos = ['atividade', 'material']
   
-    // Sua configuração do Firebase
-    const firebaseConfig = {
-                  apiKey: "AIzaSyBX_F3OlcdeWaRPS2USW1ts0s6whZm1i8E",
-                  authDomain: "login-site-lucasmatos.firebaseapp.com",
-                  projectId: "login-site-lucasmatos",
-                  appId: "1:369058484470:web:b41b0319a6f218174e1cd7"
-                };
-  
-    // Inicializa o Firebase
-    const app = initializeApp(firebaseConfig);
-  
-    const auth = getAuth();
-  
- 
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        // Usuário autenticado: mostra a página/parte protegida
-        document.body.style.display = "";
-        // Pode carregar dados do usuário, etc.
-      } else {
-        // Não autenticado: redireciona
-        window.location.href = "index.html";
+  for (const tipo of tipos) {
+    const caminhoCompleto = `professor/${turmaAluno}/${tipo}`
+    console.log(`🔍 Procurando em: ${caminhoCompleto}`)
+    
+    const { data, error } = await supabaseClient.storage
+      .from('DBEscola')
+      .list(caminhoCompleto)
+
+    if (error) {
+      console.log(`⚠️ Erro em ${tipo}:`, error)
+      continue
+    }
+
+    console.log(`📊 Arquivos encontrados em ${tipo}:`, data?.length || 0)
+    console.log('📋 Dados:', data)
+
+    if (!data || data.length === 0) {
+      continue
+    }
+
+    // Adicionar arquivos encontrados
+    for (const item of data) {
+      console.log('📄 Item:', item)
+      
+      // Se tem ID, é um arquivo real (não pasta)
+      if (item.id) { 
+        const filePath = `professor/${turmaAluno}/${tipo}/${item.name}`
+        
+        console.log('✅ Arquivo válido, adicionando:', filePath)
+        
+        const { data: urlData } = supabaseClient.storage
+          .from('DBEscola')
+          .getPublicUrl(filePath)
+
+        const li = document.createElement('li')
+        li.className = 'list-group-item d-flex justify-content-between align-items-center'
+        
+        li.innerHTML = `
+          <span>${item.name}</span>
+          <a href="${urlData.publicUrl}" target="_blank" class="btn btn-sm btn-primary">
+            Baixar
+          </a>
+        `
+        lista.appendChild(li)
+        arquivosEncontrados++
       }
-    });
-  </script>
+    }
+  }
+
+  console.log('🎯 Total de arquivos adicionados:', arquivosEncontrados)
+
+  if (arquivosEncontrados === 0) {
+    lista.innerHTML = '<li class="list-group-item">❌ Nenhum arquivo disponível para sua turma</li>'
+  }
+}
+
+
+// Carregar arquivos quando a página estiver pronta
+setTimeout(() => {
+  carregarArquivos()
+}, 1000)
+</script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  const supabaseUrl = 'https://brauqbxjvixrennhyqrk.supabase.co'
+  const supabaseKey = 'sb_publishable_4x7IM5uariLJS8hW1YO8KA_bK0sngvi'
+
+  const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey)
+
+  // Verificar autenticação do Supabase
+  supabaseClient.auth.onAuthStateChange((event, session) => {
+    if (!session) {
+      // Não autenticado: redireciona
+      window.location.href = "index.html";
+    }
+  });
+
+  // Logout
+  document.getElementById('logoutBtn').addEventListener('click', async () => {
+    await supabaseClient.auth.signOut()
+    window.location.href = "index.html"
+  })
+</script>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 </body>

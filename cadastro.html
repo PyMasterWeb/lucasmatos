@@ -16,19 +16,37 @@
         <div class="card-body p-4">
           <h3 class="text-center mb-4">Criar Conta</h3>
 
-          <form id="registerForm">
-            <div class="mb-3">
-              <label>E-mail</label>
-              <input type="email" id="email" class="form-control" required>
-            </div>
+<form id="registerForm">
+  <div class="mb-3">
+    <label>E-mail</label>
+    <input type="email" id="email" class="form-control" required>
+  </div>
 
-            <div class="mb-3">
-              <label>Senha</label>
-              <input type="password" id="password" class="form-control" required>
-            </div>
+  <div class="mb-3">
+    <label>Senha</label>
+    <input type="password" id="password" class="form-control" required>
+  </div>
 
-            <button class="btn btn-success w-100" type="submit">Cadastrar</button>
-          </form>
+  <div class="mb-3">
+    <label>Nome Completo</label>
+    <input type="text" id="nome" class="form-control" required>
+  </div>
+
+  <div class="mb-3">
+    <label>Turma</label>
+    <select id="turma" class="form-select" required>
+      <option value="">-- Selecione sua turma --</option>
+      <option value="6ano">6º Ano</option>
+      <option value="7ano">7º Ano</option>
+      <option value="8ano">8º Ano</option>
+      <option value="9ano">9º Ano</option>
+    </select>
+  </div>
+
+  <button class="btn btn-success w-100" type="submit">Cadastrar</button>
+
+  <p id="msg" class="mt-3 text-center"></p>
+</form>
 
           <p class="text-center mt-3">
             Já tem conta? <a href="loginaluno.html">Entrar</a>
@@ -39,33 +57,66 @@
     </div>
   </div>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  const supabaseClient = supabase.createClient(
+    'https://brauqbxjvixrennhyqrk.supabase.co',
+    'sb_publishable_4x7IM5uariLJS8hW1YO8KA_bK0sngvi'
+  )
 
-    const firebaseConfig = {
-                  apiKey: "AIzaSyBX_F3OlcdeWaRPS2USW1ts0s6whZm1i8E",
-                  authDomain: "login-site-lucasmatos.firebaseapp.com",
-                  projectId: "login-site-lucasmatos",
-                  appId: "1:369058484470:web:b41b0319a6f218174e1cd7"
-                };
+  const form = document.getElementById('registerForm')
+  const msg = document.getElementById('msg')
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault()
+    msg.textContent = 'Cadastrando...'
+    msg.className = ''
 
-    document.getElementById("registerForm").addEventListener("submit", (e) => {
-      e.preventDefault();
+    const email = document.getElementById('email').value
+    const password = document.getElementById('password').value
+    const nome = document.getElementById('nome').value
+    const turma = document.getElementById('turma').value
 
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
+    // 1. Cadastrar no Supabase Auth
+    const { data: authData, error: authError } = await supabaseClient.auth.signUp({
+      email,
+      password
+    })
 
-      createUserWithEmailAndPassword(auth, email, password)
-        .then(() => {
-          alert("Cadastro realizado com sucesso!");
-          window.location.href = "loginaluno.html";
-        })
-        .catch(err => alert(err.message));
-    });
-  </script>
+    if (authError) {
+      msg.textContent = authError.message
+      msg.className = 'text-danger'
+      return
+    }
+
+    // 2. Salvar informações na tabela alunos
+    const { error: dbError } = await supabaseClient
+      .from('alunos')
+      .insert([
+        {
+          email: email,
+          nome: nome,
+          turma: turma
+        }
+      ])
+
+    if (dbError) {
+      console.error('Erro ao salvar dados:', dbError)
+      msg.textContent = 'Cadastro criado, mas erro ao salvar turma'
+      msg.className = 'text-warning'
+      return
+    }
+
+    msg.textContent = 'Cadastro realizado com sucesso! Você será redirecionado...'
+    msg.className = 'text-success'
+    
+    setTimeout(() => {
+      window.location.href = 'loginaluno.html'
+    }, 2000)
+  })
+</script>
+
+
+
 </body>
 </html>
