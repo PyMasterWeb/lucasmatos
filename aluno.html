@@ -30,8 +30,20 @@
   </nav>
   <!-- CONTEÚDO PRINCIPAL -->
   <div class="container mt-4">
-    <h2 class="mb-4" >📚 Meus Conteúdos</h2>
+    <h2 class="mb-4" >📚 AVA - ALUNO</h2>
     <div class="row g-4">
+
+<!-- BLOCO DE MENSAGENS/INSTRUÇÕES DO PROFESSOR -->
+<div id="blocoMensagem" style="display: none;">
+  <div class="card mb-4 border-info">
+    <div class="card-header bg-info text-white">
+      <h5 class="mb-0">📢 Instruções do Professor</h5>
+    </div>
+    <div class="card-body">
+      <p id="textoMensagem" class="mb-0"></p>
+    </div>
+  </div>
+</div>
 
 <h3 class="mb-3">📘 Disciplinas</h3>
 
@@ -57,6 +69,31 @@ const DISCIPLINAS = [
   { nome: 'Gramática', pasta: 'gramatica' },
   { nome: 'Socioemocional', pasta: 'socioemocional' }
 ];
+
+// Carregar mensagem da turma
+async function carregarMensagemTurma(turma) {
+  try {
+    const { data, error } = await supabaseClient
+      .from('mensagens_turma')
+      .select('conteudo, professor_nome, professor_disciplina')
+      .eq('turma', turma)
+      .single()
+
+    if (error) {
+      console.log('Nenhuma mensagem definida para esta turma')
+      return
+    }
+
+    if (data && data.conteudo) {
+      const infoProfessor = data.professor_nome ? `<strong>Prof. ${data.professor_nome}</strong> (${data.professor_disciplina || 'Português'}):` : ''
+      const textoExibição = infoProfessor ? `${infoProfessor} ${data.conteudo}` : data.conteudo
+      document.getElementById('textoMensagem').innerHTML = textoExibição
+      document.getElementById('blocoMensagem').style.display = 'block'
+    }
+  } catch (error) {
+    console.error('Erro ao carregar mensagem:', error)
+  }
+}
 
 // Obter turma do aluno logado
 async function obterTurmaAluno(email) {
@@ -130,6 +167,9 @@ async function carregarArquivos() {
 
     turmaAluno = alunoData.turma
     document.getElementById('infoTurma').innerHTML = `📚 Turma: <strong>${turmaAluno === '6ano' ? '6º Ano' : turmaAluno === '7ano' ? '7º Ano' : turmaAluno === '8ano' ? '8º Ano' : '9º Ano'}</strong>`
+    
+    // Carregar mensagem da turma
+    carregarMensagemTurma(turmaAluno)
   }
 
   const container = document.getElementById('materiaisPorDisciplina')

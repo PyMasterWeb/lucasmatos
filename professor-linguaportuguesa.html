@@ -45,6 +45,22 @@
 
   <h4 id="titulaTurma" class="mb-4"></h4>
 
+  <!-- BLOCO DE MENSAGEM/INSTRUÇÕES PARA A TURMA -->
+  <div class="card mb-4 border-info">
+    <div class="card-header bg-info text-white">
+      <h5 class="mb-0">📢 Mensagem/Instrução para a Turma</h5>
+    </div>
+    <div class="card-body">
+      <textarea id="mensagemTurma" class="form-control mb-2" rows="3" placeholder="Ex: Realizar atividade até dia 30/01/2026, até às 23h59min. Enviar por e-mail: xxxx@mail.com"></textarea>
+      <button class="btn btn-info" onclick="salvarMensagemTurma()">Salvar Mensagem</button>
+      <p id="msgMensagemTurma" class="mt-2"></p>
+      <hr>
+      <div id="mensagemExibida" class="alert alert-light border">
+        <p id="textoMensagemExibida" class="mb-0 text-muted">Nenhuma mensagem definida</p>
+      </div>
+    </div>
+  </div>
+
   <ul class="nav nav-tabs mb-3" role="tablist">
     <li class="nav-item" role="presentation">
       <button class="nav-link active" id="atividades-tab" data-bs-toggle="tab" data-bs-target="#atividades" type="button" role="tab">
@@ -54,6 +70,11 @@
     <li class="nav-item" role="presentation">
       <button class="nav-link" id="materiais-tab" data-bs-toggle="tab" data-bs-target="#materiais" type="button" role="tab">
         Material Extra
+      </button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="arquivos-tab" data-bs-toggle="tab" data-bs-target="#arquivos" type="button" role="tab">
+        Gerenciar Arquivos
       </button>
     </li>
     <li class="nav-item" role="presentation">
@@ -94,7 +115,42 @@
       </div>
     </div>
 
-    <!-- ABA 3: CHAMADA -->
+    <!-- ABA 3: GERENCIAR ARQUIVOS -->
+    <div class="tab-pane fade" id="arquivos" role="tabpanel">
+      <div class="card p-4">
+        <h5 class="card-title mb-4">Gerenciar Arquivos Enviados</h5>
+        <ul class="nav nav-pills mb-3" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="tab-atividades-list" data-bs-toggle="tab" data-bs-target="#atividades-list" type="button" role="tab">
+              Atividades
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="tab-materiais-list" data-bs-toggle="tab" data-bs-target="#materiais-list" type="button" role="tab">
+              Materiais
+            </button>
+          </li>
+        </ul>
+        
+        <div class="tab-content">
+          <!-- ATIVIDADES ENVIADAS -->
+          <div class="tab-pane fade show active" id="atividades-list" role="tabpanel">
+            <div id="listaAtividades" class="list-group">
+              <p class="text-muted">Carregando arquivos...</p>
+            </div>
+          </div>
+
+          <!-- MATERIAIS ENVIADOS -->
+          <div class="tab-pane fade" id="materiais-list" role="tabpanel">
+            <div id="listaMateriais" class="list-group">
+              <p class="text-muted">Carregando arquivos...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ABA 4: CHAMADA -->
     <div class="tab-pane fade" id="chamada" role="tabpanel">
       <div class="card p-4">
         <h5 class="card-title mb-4">Registro de Chamada</h5>
@@ -129,6 +185,11 @@ function trocarTurma() {
     document.getElementById('arquivoMaterial').value = ''
     document.getElementById('msgAtividade').textContent = ''
     document.getElementById('msgMaterial').textContent = ''
+    
+    // Carregar mensagem salva e arquivos
+    carregarMensagemTurma()
+    carregarListaArquivos('atividade')
+    carregarListaArquivos('material')
   } else {
     document.getElementById('avisoTurma').style.display = 'block'
     document.getElementById('conteudoTurma').style.display = 'none'
@@ -190,6 +251,257 @@ async function uploadArquivo(inputId, msgId, caminhoTurma) {
     msg.textContent = 'Arquivo enviado com sucesso! ✓'
     msg.className = 'mt-2 text-success'
     fileInput.value = ''
+    
+    // Recarregar lista de arquivos
+    if (caminhoTurma.includes('atividade')) {
+      carregarListaArquivos('atividade')
+    } else {
+      carregarListaArquivos('material')
+    }
+  }
+}
+
+// Salvar mensagem da turma
+async function salvarMensagemTurma() {
+  if (!turmaAtual) {
+    alert('Selecione uma turma primeiro!')
+    return
+  }
+
+  const mensagem = document.getElementById('mensagemTurma').value.trim()
+  const msg = document.getElementById('msgMensagemTurma')
+
+  if (!mensagem) {
+    msg.textContent = 'Digite uma mensagem'
+    msg.className = 'text-danger'
+    return
+  }
+
+  msg.textContent = 'Salvando...'
+  msg.className = 'text-info'
+
+  try {
+    // Obter dados do usuário autenticado (professor)
+    const { data: { user }, error: userError } = await supabaseClient.auth.getUser()
+    if (userError || !user) throw new Error('Usuário não autenticado')
+
+    // Buscar dados do professor na tabela
+    const { data: professorData, error: professorError } = await supabaseClient
+      .from('professores')
+      .select('nome, disciplina')
+      .eq('id', user.id)
+      .single()
+
+    if (professorError) {
+      console.warn('Professor não encontrado na tabela, usando email', professorError)
+    }
+
+    const nomeProfessor = professorData?.nome || user.email.split('@')[0]
+    const disciplinaProfessor = professorData?.disciplina || 'Português'
+
+    const { data: existente } = await supabaseClient
+      .from('mensagens_turma')
+      .select()
+      .eq('turma', turmaAtual)
+      .single()
+
+    if (existente) {
+      // Atualizar
+      const { error } = await supabaseClient
+        .from('mensagens_turma')
+        .update({ 
+          conteudo: mensagem, 
+          professor_nome: nomeProfessor,
+          professor_disciplina: disciplinaProfessor,
+          professor_id: user.id,
+          data_atualizacao: new Date() 
+        })
+        .eq('turma', turmaAtual)
+      
+      if (error) throw error
+    } else {
+      // Inserir novo
+      const { error } = await supabaseClient
+        .from('mensagens_turma')
+        .insert([{ 
+          turma: turmaAtual, 
+          conteudo: mensagem,
+          professor_nome: nomeProfessor,
+          professor_disciplina: disciplinaProfessor,
+          professor_id: user.id
+        }])
+      
+      if (error) throw error
+    }
+
+    msg.textContent = 'Mensagem salva com sucesso! ✓'
+    msg.className = 'text-success'
+    
+    // Exibir mensagem imediatamente
+    document.getElementById('textoMensagemExibida').textContent = mensagem
+  } catch (error) {
+    console.error(error)
+    msg.textContent = 'Erro ao salvar mensagem: ' + error.message
+    msg.className = 'text-danger'
+  }
+}
+
+// Carregar mensagem salva da turma
+async function carregarMensagemTurma() {
+  if (!turmaAtual) return
+
+  try {
+    const { data, error } = await supabaseClient
+      .from('mensagens_turma')
+      .select('conteudo, professor_nome, professor_disciplina')
+      .eq('turma', turmaAtual)
+      .single()
+
+    if (data) {
+      document.getElementById('mensagemTurma').value = data.conteudo
+      const infoProfessor = data.professor_nome ? ` (Prof. ${data.professor_nome} - ${data.professor_disciplina || 'Português'})` : ''
+      const textoExibição = data.conteudo + infoProfessor
+      document.getElementById('textoMensagemExibida').textContent = textoExibição
+    } else {
+      document.getElementById('mensagemTurma').value = ''
+      document.getElementById('textoMensagemExibida').textContent = 'Nenhuma mensagem definida'
+    }
+  } catch (error) {
+    console.error('Erro ao carregar mensagem:', error)
+    document.getElementById('textoMensagemExibida').textContent = 'Nenhuma mensagem definida'
+  }
+}
+
+// Carregar lista de arquivos
+async function carregarListaArquivos(tipo) {
+  if (!turmaAtual) return
+
+  const caminhoTurma = `${turmaAtual}/${tipo}`
+  const containerId = tipo === 'atividade' ? 'listaAtividades' : 'listaMateriais'
+  const container = document.getElementById(containerId)
+
+  try {
+    const { data, error } = await supabaseClient.storage
+      .from('DBEscola')
+      .list(`professor/${caminhoTurma}`)
+
+    if (error) throw error
+
+    if (!data || data.length === 0) {
+      container.innerHTML = '<p class="text-muted">Nenhum arquivo enviado</p>'
+      return
+    }
+
+    let html = ''
+    for (const file of data) {
+      const nomeArquivo = file.name.split('_').slice(1).join('_') || file.name
+      const caminhoCompleto = `professor/${caminhoTurma}/${file.name}`
+      
+      html += `
+        <div class="list-group-item d-flex justify-content-between align-items-center">
+          <div class="flex-grow-1">
+            <strong>📄 ${nomeArquivo}</strong>
+            <br>
+            <small class="text-muted">Criado em: ${new Date(file.created_at).toLocaleDateString('pt-BR')}</small>
+          </div>
+          <div class="btn-group btn-group-sm" role="group">
+            <button class="btn btn-primary" onclick="baixarArquivo('${caminhoCompleto}', '${nomeArquivo}')" title="Download">
+              ⬇️
+            </button>
+            <button class="btn btn-warning" onclick="renomearArquivo('${caminhoCompleto}', '${nomeArquivo}', '${tipo}')" title="Editar">
+              ✏️
+            </button>
+            <button class="btn btn-danger" onclick="deletarArquivo('${caminhoCompleto}', '${tipo}')" title="Deletar">
+              🗑️
+            </button>
+          </div>
+        </div>
+      `
+    }
+
+    container.innerHTML = html
+  } catch (error) {
+    console.error('Erro ao carregar arquivos:', error)
+    container.innerHTML = '<p class="text-danger">Erro ao carregar arquivos</p>'
+  }
+}
+
+// Baixar arquivo
+async function baixarArquivo(caminhoCompleto, nomeArquivo) {
+  try {
+    const { data, error } = await supabaseClient.storage
+      .from('DBEscola')
+      .download(caminhoCompleto)
+
+    if (error) throw error
+
+    const url = URL.createObjectURL(data)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = nomeArquivo
+    link.click()
+    URL.revokeObjectURL(url)
+  } catch (error) {
+    console.error('Erro ao baixar arquivo:', error)
+    alert('Erro ao baixar arquivo')
+  }
+}
+
+// Renomear/Editar arquivo
+async function renomearArquivo(caminhoCompleto, nomeAtual, tipo) {
+  const novoNome = prompt(`Renomear arquivo:\n\nNome atual: ${nomeAtual}\n\nNovo nome:`, nomeAtual)
+  
+  if (!novoNome || novoNome === nomeAtual) return
+
+  try {
+    // Baixar arquivo original
+    const { data: fileData, error: downloadError } = await supabaseClient.storage
+      .from('DBEscola')
+      .download(caminhoCompleto)
+
+    if (downloadError) throw downloadError
+
+    // Extrair caminho e timestamp
+    const partes = caminhoCompleto.split('/')
+    const timestamp = partes[partes.length - 1].split('_')[0]
+    const caminhoNovo = caminhoCompleto.split('/').slice(0, -1).join('/') + `/${timestamp}_${novoNome}`
+
+    // Upload com novo nome
+    const { error: uploadError } = await supabaseClient.storage
+      .from('DBEscola')
+      .upload(caminhoNovo, fileData, { upsert: false })
+
+    if (uploadError) throw uploadError
+
+    // Deletar arquivo antigo
+    await supabaseClient.storage
+      .from('DBEscola')
+      .remove([caminhoCompleto])
+
+    alert('Arquivo renomeado com sucesso!')
+    carregarListaArquivos(tipo)
+  } catch (error) {
+    console.error('Erro ao renomear arquivo:', error)
+    alert('Erro ao renomear arquivo')
+  }
+}
+
+// Deletar arquivo
+async function deletarArquivo(caminhoCompleto, tipo) {
+  if (!confirm('Tem certeza que deseja deletar este arquivo?')) return
+
+  try {
+    const { error } = await supabaseClient.storage
+      .from('DBEscola')
+      .remove([caminhoCompleto])
+
+    if (error) throw error
+
+    alert('Arquivo deletado com sucesso!')
+    carregarListaArquivos(tipo)
+  } catch (error) {
+    console.error('Erro ao deletar arquivo:', error)
+    alert('Erro ao deletar arquivo')
   }
 }
 </script>
