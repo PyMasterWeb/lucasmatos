@@ -5,14 +5,27 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      overflow-x: hidden;
+    }
+    .container {
+      min-height: 100vh;
+      padding-bottom: 50px;
+    }
+    #materiaisPorDisciplina {
+      padding-bottom: 30px;
+    }
+  </style>
 </head>
 <body class="bg-light">
   <!-- NAVBAR DO DASHBOARD -->
   <nav class="navbar navbar-dark bg-dark">
     
     <div class="container-fluid">
-      <span class="navbar-brand">Área do Aluno</span>
-      <button id="logoutBtn" class="btn btn-outline-light btn-sm">Sair</button>
+<span class="navbar-brand">Área do Aluno</span>
+<span class="text-light ms-auto me-3" id="nomeAluno"></span>
+<button id="logoutBtn" class="btn btn-outline-light btn-sm">Sair</button>
     </div>
   </nav>
   <!-- CONTEÚDO PRINCIPAL -->
@@ -22,113 +35,28 @@
 
 <h3 class="mb-3">📘 Disciplinas</h3>
 
-<div class="row g-3">
-  <div class="col-md-3">
-    <a href="6ano.html" class="text-decoration-none">
-      <div class="card shadow-sm h-100">
-        <div class="card-body text-center">
-          <h6>Português</h6>
-        </div>
-      </div>
-    </a>
-  </div>
-
-  <div class="col-md-3">
-    <a href="disciplina.html?d=matematica" class="text-decoration-none">
-      <div class="card shadow-sm h-100">
-        <div class="card-body text-center">
-          <h6>Matemática</h6>
-        </div>
-      </div>
-    </a>
-  </div>
-
-  <div class="col-md-3">
-    <a href="disciplina.html?d=ciencias" class="text-decoration-none">
-      <div class="card shadow-sm h-100">
-        <div class="card-body text-center">
-          <h6>Ciências</h6>
-        </div>
-      </div>
-    </a>
-  </div>
-</div>
-
-<div class="row g-3">
-  <div class="col-md-3">
-    <a href="disciplina.html?d=portugues" class="text-decoration-none">
-      <div class="card shadow-sm h-100">
-        <div class="card-body text-center">
-          <h6>História</h6>
-        </div>
-      </div>
-    </a>
-  </div>
-
-  <div class="col-md-3">
-    <a href="disciplina.html?d=matematica" class="text-decoration-none">
-      <div class="card shadow-sm h-100">
-        <div class="card-body text-center">
-          <h6>Geografia</h6>
-        </div>
-      </div>
-    </a>
-  </div>
-
-  <div class="col-md-3">
-    <a href="disciplina.html?d=ciencias" class="text-decoration-none">
-      <div class="card shadow-sm h-100">
-        <div class="card-body text-center">
-          <h6>Artes</h6>
-        </div>
-      </div>
-    </a>
-  </div>
-</div>
-
-<div class="row g-3">
-  <div class="col-md-3">
-    <a href="disciplina.html?d=portugues" class="text-decoration-none">
-      <div class="card shadow-sm h-100">
-        <div class="card-body text-center">
-          <h6>Educação Física</h6>
-        </div>
-      </div>
-    </a>
-  </div>
-
-  <div class="col-md-3">
-    <a href="disciplina.html?d=matematica" class="text-decoration-none">
-      <div class="card shadow-sm h-100">
-        <div class="card-body text-center">
-          <h6>Ética</h6>
-        </div>
-      </div>
-    </a>
-  </div>
-
-  <div class="col-md-3">
-    <a href="disciplina.html?d=ciencias" class="text-decoration-none">
-      <div class="card shadow-sm h-100">
-        <div class="card-body text-center">
-          <h6>Socioemocional</h6>
-        </div>
-      </div>
-    </a>
-  </div>
-</div>
-
-
-
-
-
 <h4>Materiais disponíveis
   <button class="btn btn-sm btn-secondary" onclick="carregarArquivos()">🔄 Recarregar</button>
 </h4>
 <div id="infoTurma" class="alert alert-info"></div>
-<ul id="listaArquivos" class="list-group"></ul>
+<div id="materiaisPorDisciplina"></div>
+
 <script>
 let turmaAluno = '';
+
+// Disciplinas com seus possíveis nomes de pasta
+const DISCIPLINAS = [
+  { nome: 'Português', pasta: 'portugues' },
+  { nome: 'Matemática', pasta: 'matematica' },
+  { nome: 'Ciências', pasta: 'ciencias' },
+  { nome: 'História', pasta: 'historia' },
+  { nome: 'Geografia', pasta: 'geografia' },
+  { nome: 'Artes', pasta: 'artes' },
+  { nome: 'Educação Física', pasta: 'educacaofisica' },
+  { nome: 'Inglês', pasta: 'ingles' },
+  { nome: 'Gramática', pasta: 'gramatica' },
+  { nome: 'Socioemocional', pasta: 'socioemocional' }
+];
 
 // Obter turma do aluno logado
 async function obterTurmaAluno(email) {
@@ -141,7 +69,6 @@ async function obterTurmaAluno(email) {
   if (error) {
     console.error('Erro ao obter turma:', error)
     if (error.code === 'PGRST116') {
-      // Nenhum registro encontrado
       document.getElementById('infoTurma').innerHTML = `⚠️ Aluno não encontrado no sistema.<br>
         <small>Por favor, faça seu cadastro primeiro em <a href="cadastro.html">cadastro.html</a></small>`
     } else {
@@ -151,6 +78,41 @@ async function obterTurmaAluno(email) {
   }
 
   return data
+}
+
+// Obter nome do professor de uma disciplina
+async function obterNomeProfessor(disciplinaPasta) {
+  try {
+    // Tentar buscar todos os professores e filtrar no cliente
+    const { data, error } = await supabaseClient
+      .from('professores')
+      .select('nome, disciplina')
+
+    if (error) {
+      console.log(`Erro ao buscar professores: ${error.message}`)
+      return null
+    }
+
+    if (!data || data.length === 0) {
+      return null
+    }
+
+    // Buscar o professor cuja disciplina contenha a disciplina_pasta (sem acentos)
+    const professor = data.find(prof => {
+      if (!prof.disciplina) return false
+      const disciplinaLower = prof.disciplina.toLowerCase()
+      // Remove acentos e compara
+      const normalized = disciplinaLower
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+      return normalized.includes(disciplinaPasta)
+    })
+
+    return professor ? professor.nome : null
+  } catch (e) {
+    console.log(`Erro ao buscar professor: ${e.message}`)
+    return null
+  }
 }
 
 async function carregarArquivos() {
@@ -164,76 +126,116 @@ async function carregarArquivos() {
 
     const alunoData = await obterTurmaAluno(session.data.session.user.email)
     if (!alunoData) return
+    document.getElementById('nomeAluno').textContent = `👤 ${alunoData.nome}`
 
     turmaAluno = alunoData.turma
     document.getElementById('infoTurma').innerHTML = `📚 Turma: <strong>${turmaAluno === '6ano' ? '6º Ano' : turmaAluno === '7ano' ? '7º Ano' : turmaAluno === '8ano' ? '8º Ano' : '9º Ano'}</strong>`
   }
 
-  const lista = document.getElementById('listaArquivos')
-  lista.innerHTML = ''
+  const container = document.getElementById('materiaisPorDisciplina')
+  container.innerHTML = '<div class="text-center mt-3"><div class="spinner-border" role="status"><span class="visually-hidden">Carregando...</span></div></div>'
 
-  console.log('📁 Procurando arquivos para turma:', turmaAluno)
+  let temAlgumaMateria = false
+  let htmlDisciplinas = ''
 
-  let arquivosEncontrados = 0
-  
-  // Tipos de conteúdo que queremos listar
-  const tipos = ['atividade', 'material']
-  
-  for (const tipo of tipos) {
-    const caminhoCompleto = `professor/${turmaAluno}/${tipo}`
-    console.log(`🔍 Procurando em: ${caminhoCompleto}`)
+  // Iterar por cada disciplina
+  for (const disciplina of DISCIPLINAS) {
+    console.log(`\n📚 Processando disciplina: ${disciplina.nome} (pasta: ${disciplina.pasta})`)
     
-    const { data, error } = await supabaseClient.storage
-      .from('DBEscola')
-      .list(caminhoCompleto)
+    let arquivosMateria = []
 
-    if (error) {
-      console.log(`⚠️ Erro em ${tipo}:`, error)
-      continue
-    }
+    // Procurar materiais e atividades
+    for (const tipo of ['material', 'atividade']) {
+      const caminhoCompleto = `professor/${disciplina.pasta}/${turmaAluno}/${tipo}`
+      console.log(`🔍 Procurando em: ${caminhoCompleto}`)
 
-    console.log(`📊 Arquivos encontrados em ${tipo}:`, data?.length || 0)
-    console.log('📋 Dados:', data)
+      const { data, error } = await supabaseClient.storage
+        .from('DBEscola')
+        .list(caminhoCompleto)
 
-    if (!data || data.length === 0) {
-      continue
-    }
+      if (error) {
+        console.log(`⚠️ Erro: ${error.message}`)
+        continue
+      }
 
-    // Adicionar arquivos encontrados
-    for (const item of data) {
-      console.log('📄 Item:', item)
-      
-      // Se tem ID, é um arquivo real (não pasta)
-      if (item.id) { 
-        const filePath = `professor/${turmaAluno}/${tipo}/${item.name}`
+      if (data && data.length > 0) {
+        console.log(`✅ Encontrados ${data.length} itens em ${tipo}`)
         
-        console.log('✅ Arquivo válido, adicionando:', filePath)
-        
-        const { data: urlData } = supabaseClient.storage
-          .from('DBEscola')
-          .getPublicUrl(filePath)
+        for (const item of data) {
+          if (item.id) {
+            const filePath = `professor/${disciplina.pasta}/${turmaAluno}/${tipo}/${item.name}`
+            const { data: urlData } = supabaseClient.storage
+              .from('DBEscola')
+              .getPublicUrl(filePath)
 
-        const li = document.createElement('li')
-        li.className = 'list-group-item d-flex justify-content-between align-items-center'
-        
-        li.innerHTML = `
-          <span>${item.name}</span>
-          <a href="${urlData.publicUrl}" target="_blank" class="btn btn-sm btn-primary">
-            Baixar
-          </a>
-        `
-        lista.appendChild(li)
-        arquivosEncontrados++
+            arquivosMateria.push({
+              nome: item.name,
+              url: urlData.publicUrl,
+              tipo: tipo
+            })
+          }
+        }
       }
     }
+
+    // Se encontrou arquivos nesta disciplina
+    if (arquivosMateria.length > 0) {
+      temAlgumaMateria = true
+      
+      // Obter nome do professor
+      const nomeProfessor = await obterNomeProfessor(disciplina.pasta)
+      const labelProfessor = nomeProfessor ? ` • Prof. ${nomeProfessor}` : ''
+
+      // Montar HTML da disciplina
+      htmlDisciplinas += `
+        <div class="mt-4">
+          <h5 class="border-bottom pb-2" style="color: #0d6efd;">
+            📖 ${disciplina.nome}${labelProfessor}
+          </h5>
+          <ul class="list-group mt-3">
+      `
+
+      // Adicionar materiais
+      for (const arquivo of arquivosMateria) {
+        const icone = arquivo.tipo === 'atividade' ? '✏️' : '📄'
+        const badge = arquivo.tipo === 'atividade' ? '<span class="badge bg-warning text-dark ms-2">Atividade</span>' : '<span class="badge bg-info text-dark ms-2">Material</span>'
+        
+        htmlDisciplinas += `
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            <span>${icone} ${arquivo.nome}${badge}</span>
+            <a href="${arquivo.url}" target="_blank" download class="btn btn-sm btn-primary">
+              ⬇️ Baixar
+            </a>
+          </li>
+        `
+      }
+
+      htmlDisciplinas += `
+          </ul>
+        </div>
+      `
+    }
   }
 
-  console.log('🎯 Total de arquivos adicionados:', arquivosEncontrados)
-
-  if (arquivosEncontrados === 0) {
-    lista.innerHTML = '<li class="list-group-item">❌ Nenhum arquivo disponível para sua turma</li>'
+  // Mostrar resultado
+  if (temAlgumaMateria) {
+    container.innerHTML = htmlDisciplinas
+  } else {
+    container.innerHTML = `
+      <div class="alert alert-warning mt-3">
+        ❌ Nenhum material disponível para sua turma (${turmaAluno})
+        <br><small style="color: #666; margin-top: 5px; display: block;">
+          Os professores ainda não enviaram materiais ou atividades.
+        </small>
+      </div>
+    `
   }
 }
+
+// Carregar arquivos quando a página estiver pronta
+setTimeout(() => {
+  carregarArquivos()
+}, 1000)
 
 
 // Carregar arquivos quando a página estiver pronta
