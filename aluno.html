@@ -231,6 +231,12 @@ async function carregarArquivos() {
         <div class="mt-4">
           <h5 class="border-bottom pb-2" style="color: #0d6efd;">
             📖 ${disciplina.nome}${labelProfessor}
+            <button class="btn btn-sm btn-info ms-2" onclick="abrirModalBoletim('${disciplina.pasta}', '${disciplina.nome}')">
+              📊 Boletim
+            </button>
+            <button class="btn btn-sm btn-warning ms-2" onclick="abrirModalEnviarAtividade('${disciplina.pasta}', '${disciplina.nome}')">
+              📤 Enviar Atividade
+            </button>
           </h5>
           <ul class="list-group mt-3">
       `
@@ -282,9 +288,188 @@ setTimeout(() => {
 setTimeout(() => {
   carregarArquivos()
 }, 1000)
-</script>
 
+// Modal para abrir boletim
+async function abrirModalBoletim(disciplinaPasta, disciplinaNome) {
+  const session = await supabaseClient.auth.getSession()
+  if (!session.data.session) {
+    alert('Você precisa estar autenticado')
+    return
+  }
 
+  const alunoId = session.data.session.user.id
+  
+  try {
+    // Buscar notas do aluno nesta disciplina
+    const { data: notas, error } = await supabaseClient
+      .from('notas')
+      .select('*')
+      .eq('aluno_id', alunoId)
+      .eq('disciplina', disciplinaPasta)
+      .order('data_criacao', { ascending: false })
+
+    if (error) {
+      console.error('Erro ao carregar boletim:', error)
+      alert('Erro ao carregar boletim')
+      return
+    }
+
+    // Montar HTML do boletim
+    let htmlBoletim = ''
+    if (notas && notas.length > 0) {
+      htmlBoletim = '<table class="table table-sm"><thead><tr><th>Data</th><th>Nota</th><th>Feedback</th><th>Professor</th></tr></thead><tbody>'
+      
+      for (const nota of notas) {
+        const dataCriacao = new Date(nota.data_criacao).toLocaleDateString('pt-BR')
+        const feedbackTexto = nota.feedback || '—'
+        const professorNome = nota.professor_nome || 'Sem info'
+        const notaValor = nota.valor !== null ? nota.valor.toFixed(1) : '—'
+        
+        htmlBoletim += `
+          <tr>
+            <td>${dataCriacao}</td>
+            <td><strong>${notaValor}</strong></td>
+            <td>${feedbackTexto}</td>
+            <td>${professorNome}</td>
+          </tr>
+        `
+      }
+      
+      htmlBoletim += '</tbody></table>'
+    } else {
+      htmlBoletim = '<div class="alert alert-info">Nenhuma nota registrada ainda para esta disciplina.</div>'
+    }
+
+    // Exibir no modal
+    document.getElementById('conteudoBoletimDisciplina').innerHTML = htmlBoletim
+    document.getElementById('disciplinaNomeBoletim').textContent = disciplinaNome
+    const modal = new bootstrap.Modal(document.getElementById('modalBoletim'), {})
+    modal.show()
+  } catch (error) {
+    console.error('Erro:', error)
+    alert('Erro ao carregar boletim: ' + error.message)
+  }
+}
+
+// Modal para enviar atividade
+function abrirModalEnviarAtividade(disciplinaPasta, disciplinaNome) {
+  const modal = new bootstrap.Modal(document.getElementById('modalEnviarAtividade'), {})
+  document.getElementById('disciplinaAtualModal').value = disciplinaPasta
+  document.getElementById('disciplinaNomeModal').textContent = disciplinaNome
+  document.getElementById('msgEnvioAtividade').textContent = ''
+  document.getElementById('fileInputAtividade').value = ''
+  modal.show()
+}
+
+// Enviar atividade
+async function enviarAtividade() {
+  const fileInput = document.getElementById('fileInputAtividade')
+  const disciplinaPasta = document.getElementById('disciplinaAtualModal').value
+  const msgDiv = document.getElementById('msgEnvioAtividade')
+
+  if (!fileInput.files.length) {
+    msgDiv.textContent = '⚠️ Selecione um arquivo'
+    msgDiv.className = 'text-danger mt-2'
+    return
+  }
+
+  const file = fileInput.files[0]
+  msgDiv.textContent = 'Enviando...'
+  msgDiv.className = 'text-info mt-2'
+
+  try {
+    const session = await supabaseClient.auth.getSession()
+    if (!session.data.session) {
+      throw new Error('Você precisa estar autenticado')
+    }
+
+    const alunoEmail = session.data.session.user.email
+    const alunoData = await obterTurmaAluno(alunoEmail)
+    if (!alunoData) throw new Error('Dados do aluno não encontrados')
+
+    // Sanitizar nome do arquivo
+    const sanitizedName = file.name
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/\s+/g, '_')
+      .replace(/[^a-zA-Z0-9._-]/g, '')
+
+    const filePath = `aluno/atividades/${disciplinaPasta}/${alunoData.turma}/${Date.now()}_${sanitizedName}`
+
+    // Upload do arquivo
+    const { error: uploadError } = await supabaseClient.storage
+      .from('DBEscola')
+      .upload(filePath, file)
+
+    if (uploadError) throw uploadError
+
+    // Registrar atividade no banco de dados
+    const { error: dbError } = await supabaseClient
+      .from('atividades')
+      .insert([{
+        aluno_id: session.data.session.user.id,
+        aluno_nome: alunoData.nome,
+        turma: alunoData.turma,
+        disciplina: disciplinaPasta,
+        arquivo_path: filePath
+      }])
+
+    if (dbError) throw dbError
+
+    msgDiv.textContent = '✅ Atividade enviada com sucesso!'
+    msgDiv.className = 'text-success mt-2'
+    
+    setTimeout(() => {
+      bootstrap.Modal.getInstance(document.getElementById('modalEnviarAtividade')).hide()
+      carregarArquivos() // Recarregar para mostrar a atividade enviada
+    }, 1500)
+  } catch (error) {
+    console.error(error)
+    msgDiv.textContent = '❌ Erro: ' + error.message
+    msgDiv.className = 'text-danger mt-2'
+  }
+}</script>
+
+<!-- MODAL DO BOLETIM -->
+<div class="modal fade" id="modalBoletim" tabindex="-1" aria-labelledby="modalBoletimLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalBoletimLabel">📊 Boletim - <span id="disciplinaNomeBoletim"></span></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div id="conteudoBoletimDisciplina"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL PARA ENVIAR ATIVIDADE -->
+<div class="modal fade" id="modalEnviarAtividade" tabindex="-1" aria-labelledby="modalEnviarAtividadeLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalEnviarAtividadeLabel">📤 Enviar Atividade</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p><strong>Disciplina:</strong> <span id="disciplinaNomeModal"></span></p>
+        <label for="fileInputAtividade" class="form-label">Selecione o arquivo:</label>
+        <input type="file" id="fileInputAtividade" class="form-control" accept=".pdf,.doc,.docx,.txt,.jpg,.png,.xlsx">
+        <input type="hidden" id="disciplinaAtualModal">
+        <div id="msgEnvioAtividade"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary" onclick="enviarAtividade()">Enviar</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>

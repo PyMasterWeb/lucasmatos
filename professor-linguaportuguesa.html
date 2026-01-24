@@ -78,6 +78,11 @@
       </button>
     </li>
     <li class="nav-item" role="presentation">
+      <button class="nav-link" id="atividades-alunos-tab" data-bs-toggle="tab" data-bs-target="#atividades-alunos" type="button" role="tab">
+        Atividades Enviadas
+      </button>
+    </li>
+    <li class="nav-item" role="presentation">
       <button class="nav-link" id="chamada-tab" data-bs-toggle="tab" data-bs-target="#chamada" type="button" role="tab">
         Chamada
       </button>
@@ -150,7 +155,17 @@
       </div>
     </div>
 
-    <!-- ABA 4: CHAMADA -->
+    <!-- ABA 4: ATIVIDADES ENVIADAS PELOS ALUNOS -->
+    <div class="tab-pane fade" id="atividades-alunos" role="tabpanel">
+      <div class="card p-4">
+        <h5 class="card-title mb-4">Atividades Enviadas pelos Alunos</h5>
+        <div id="listaAtividadesAlunos" class="list-group">
+          <p class="text-muted">Carregando atividades...</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ABA 5: CHAMADA -->
     <div class="tab-pane fade" id="chamada" role="tabpanel">
       <div class="card p-4">
         <h5 class="card-title mb-4">Registro de Chamada</h5>
@@ -186,10 +201,11 @@ function trocarTurma() {
     document.getElementById('msgAtividade').textContent = ''
     document.getElementById('msgMaterial').textContent = ''
     
-    // Carregar mensagem salva e arquivos
+    // Carregar mensagem salva, arquivos e atividades dos alunos
     carregarMensagemTurma()
     carregarListaArquivos('atividade')
     carregarListaArquivos('material')
+    carregarAtividadesAlunos()
   } else {
     document.getElementById('avisoTurma').style.display = 'block'
     document.getElementById('conteudoTurma').style.display = 'none'
@@ -504,7 +520,208 @@ async function deletarArquivo(caminhoCompleto, tipo) {
     alert('Erro ao deletar arquivo')
   }
 }
+
+// Carregar atividades enviadas pelos alunos
+async function carregarAtividadesAlunos() {
+  if (!turmaAtual) return
+
+  const container = document.getElementById('listaAtividadesAlunos')
+  container.innerHTML = '<p class="text-muted">Carregando atividades...</p>'
+
+  try {
+    const { data: atividades, error } = await supabaseClient
+      .from('atividades')
+      .select('*')
+      .eq('turma', turmaAtual)
+      .order('data_envio', { ascending: false })
+
+    if (error) throw error
+
+    if (!atividades || atividades.length === 0) {
+      container.innerHTML = '<p class="text-muted">Nenhuma atividade enviada ainda.</p>'
+      return
+    }
+
+    let html = ''
+    for (const atividade of atividades) {
+      const dataEnvio = new Date(atividade.data_envio).toLocaleDateString('pt-BR')
+      const nomeArquivo = atividade.arquivo_path.split('/').pop()
+      
+      html += `
+        <div class="list-group-item">
+          <div class="d-flex justify-content-between align-items-start">
+            <div class="flex-grow-1">
+              <h6 class="mb-1">📝 ${atividade.aluno_nome}</h6>
+              <small class="text-muted">Disciplina: ${atividade.disciplina} | Enviado em: ${dataEnvio}</small>
+              <br>
+              <small><strong>Arquivo:</strong> ${nomeArquivo}</small>
+            </div>
+            <div class="btn-group btn-group-sm" role="group">
+              <button class="btn btn-primary" onclick="abrirAtividadeAluno(${atividade.id}, '${atividade.aluno_nome}', '${atividade.disciplina}', '${atividade.arquivo_path}')" title="Abrir">
+                👁️ Abrir
+              </button>
+              <button class="btn btn-info" onclick="abrirModalAtribuirNota(${atividade.id}, '${atividade.aluno_nome}')" title="Atribuir Nota">
+                ⭐ Nota
+              </button>
+            </div>
+          </div>
+        </div>
+      `
+    }
+
+    container.innerHTML = html
+  } catch (error) {
+    console.error('Erro ao carregar atividades:', error)
+    container.innerHTML = '<p class="text-danger">Erro ao carregar atividades</p>'
+  }
+}
+
+// Abrir atividade do aluno
+async function abrirAtividadeAluno(atividadeId, alunoNome, disciplina, arquivoPath) {
+  try {
+    const { data, error } = await supabaseClient.storage
+      .from('DBEscola')
+      .download(arquivoPath)
+
+    if (error) throw error
+
+    const url = URL.createObjectURL(data)
+    window.open(url, '_blank')
+    URL.revokeObjectURL(url)
+  } catch (error) {
+    console.error('Erro ao baixar arquivo:', error)
+    alert('Erro ao abrir arquivo: ' + error.message)
+  }
+}
+
+// Modal para atribuir nota
+function abrirModalAtribuirNota(atividadeId, alunoNome) {
+  document.getElementById('atividadeIdNota').value = atividadeId
+  document.getElementById('alunoNomeNota').textContent = alunoNome
+  document.getElementById('notaValor').value = ''
+  document.getElementById('feedbackNota').value = ''
+  document.getElementById('msgAtribuirNota').textContent = ''
+  const modal = new bootstrap.Modal(document.getElementById('modalAtribuirNota'), {})
+  modal.show()
+}
+
+// Atribuir nota
+async function atribuirNota() {
+  const atividadeId = document.getElementById('atividadeIdNota').value
+  const notaValor = parseFloat(document.getElementById('notaValor').value)
+  const feedbackNota = document.getElementById('feedbackNota').value
+  const msgDiv = document.getElementById('msgAtribuirNota')
+
+  if (isNaN(notaValor) || notaValor < 0 || notaValor > 10) {
+    msgDiv.textContent = '⚠️ Insira uma nota entre 0 e 10'
+    msgDiv.className = 'text-danger mt-2'
+    return
+  }
+
+  msgDiv.textContent = 'Salvando nota...'
+  msgDiv.className = 'text-info mt-2'
+
+  try {
+    const { data: { user } } = await supabaseClient.auth.getUser()
+    const { data: professorData } = await supabaseClient
+      .from('professores')
+      .select('nome')
+      .eq('id', user.id)
+      .single()
+
+    const nomeProfessor = professorData?.nome || user.email.split('@')[0]
+
+    // Buscar a atividade para obter informações do aluno
+    const { data: atividade } = await supabaseClient
+      .from('atividades')
+      .select('*')
+      .eq('id', atividadeId)
+      .single()
+
+    if (!atividade) throw new Error('Atividade não encontrada')
+
+    // Verificar se já existe nota para esta atividade
+    const { data: notaExistente } = await supabaseClient
+      .from('notas')
+      .select('id')
+      .eq('atividade_id', atividadeId)
+      .single()
+
+    if (notaExistente) {
+      // Atualizar nota existente
+      const { error } = await supabaseClient
+        .from('notas')
+        .update({
+          valor: notaValor,
+          feedback: feedbackNota,
+          professor_nome: nomeProfessor,
+          professor_id: user.id,
+          data_atualizacao: new Date()
+        })
+        .eq('id', notaExistente.id)
+
+      if (error) throw error
+    } else {
+      // Criar nova nota
+      const { error } = await supabaseClient
+        .from('notas')
+        .insert([{
+          atividade_id: atividadeId,
+          aluno_id: atividade.aluno_id,
+          professor_id: user.id,
+          professor_nome: nomeProfessor,
+          disciplina: atividade.disciplina,
+          turma: atividade.turma,
+          valor: notaValor,
+          feedback: feedbackNota
+        }])
+
+      if (error) throw error
+    }
+
+    msgDiv.textContent = '✅ Nota salva com sucesso!'
+    msgDiv.className = 'text-success mt-2'
+
+    setTimeout(() => {
+      bootstrap.Modal.getInstance(document.getElementById('modalAtribuirNota')).hide()
+      carregarAtividadesAlunos()
+    }, 1500)
+  } catch (error) {
+    console.error(error)
+    msgDiv.textContent = '❌ Erro: ' + error.message
+    msgDiv.className = 'text-danger mt-2'
+  }
+}
 </script>
+
+<!-- MODAL PARA ATRIBUIR NOTA -->
+<div class="modal fade" id="modalAtribuirNota" tabindex="-1" aria-labelledby="modalAtribuirNotaLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalAtribuirNotaLabel">⭐ Atribuir Nota</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p><strong>Aluno:</strong> <span id="alunoNomeNota"></span></p>
+        <div class="mb-3">
+          <label for="notaValor" class="form-label">Nota (0-10):</label>
+          <input type="number" id="notaValor" class="form-control" min="0" max="10" step="0.1" placeholder="Ex: 8.5">
+        </div>
+        <div class="mb-3">
+          <label for="feedbackNota" class="form-label">Feedback (opcional):</label>
+          <textarea id="feedbackNota" class="form-control" rows="3" placeholder="Escreva um feedback para o aluno..."></textarea>
+        </div>
+        <div id="msgAtribuirNota"></div>
+        <input type="hidden" id="atividadeIdNota">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary" onclick="atribuirNota()">Salvar Nota</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
