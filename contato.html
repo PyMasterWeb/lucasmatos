@@ -86,26 +86,50 @@
 </div>
 </div>
 </header>
-  <main>
-    <section id="contato" class="container" class="container-fluid">
-      <div class="item">
-      <h1>Contato</h1>
-      <p>Envie-me uma mensagem através do formulário abaixo:</p>
-      <form action="https://wa.me/5571992582476?text=" method="get" target="_blank">
-        <label for="mensagem">Mensagem:</label>
-        <textarea id="mensagem" name="text" rows="4" cols="50"></textarea>
-        <br>
-        <button type="submit">Enviar via WhatsApp</button>
-      </form>
+<main>
+  <section id="contato" class="container my-5">
+    
+    <div class="row justify-content-center">
+<div class="col-12 col-md-10 col-lg-9 col-xl-8">
+
+        <div class="item">
+          <h1 class="mb-3">Contato</h1>
+          <p>Envie-me uma mensagem através do formulário abaixo:</p>
+
+          <form 
+            action="https://wa.me/5571992582476"
+            method="get"
+            target="_blank"
+          >
+            <div class="mb-3">
+              <label for="mensagem" class="form-label">Mensagem</label>
+              <textarea
+                id="mensagem"
+                name="text"
+                class="form-control"
+                rows="4"
+                placeholder="Digite sua mensagem aqui..."
+                required
+              ></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-success w-100">
+              Enviar via WhatsApp
+            </button>
+          </form>
         </div>
 
-        <div class="alert alert-warning alert-dismissible fade show" role="alert">
-          <strong>PARABÉNS!</strong> Você acaba de ganhar 1 sessão de mentoria acadêmica! Envie agora mesmo no formulário uma mensagem com a sua demanda e receba uma resposta personalizada ainda hoje!.
-          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>      
-        
-    </section>
-  </main>
+        <div class="alert alert-warning alert-dismissible fade show mt-4" role="alert">
+          <strong>PROMOÇÃO!</strong> Descontos especiais de até 10% na mensalidade para o 6º, 7º, 8º e 9º ano. Válida até dia 30/01/2026.
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+      </div>
+    </div>
+
+  </section>
+</main>
+
   <p>&copy; 2025 Lucas Matos. CNPJ 43.680.356/0001-26. Todos os direitos reservados.</p>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>

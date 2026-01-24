@@ -36,14 +36,14 @@
               <label>Disciplina</label>
               <select id="disciplina" class="form-select" required>
                 <option value="">-- Selecione sua disciplina --</option>
-                <option value="linguaportuguesa">Língua Portuguesa</option>
-                <option value="matematica">Matemática</option>
-                <option value="ciencias">Ciências</option>
-                <option value="historia">História</option>
-                <option value="geografia">Geografia</option>
-                <option value="educacaofisica">Educação Física</option>
-                <option value="artes">Artes</option>
-                <option value="inglês">Inglês</option>
+                <option value="Língua Portuguesa">Língua Portuguesa</option>
+                <option value="Matemática">Matemática</option>
+                <option value="Ciências">Ciências</option>
+                <option value="História">História</option>
+                <option value="Geografia">Geografia</option>
+                <option value="Educação Física">Educação Física</option>
+                <option value="Artes">Artes</option>
+                <option value="Inglês">Inglês</option>
               </select>
             </div>
 
@@ -81,11 +81,12 @@
       const nome = document.getElementById('nome').value
       const disciplina = document.getElementById('disciplina').value
 
-      // 1. Cadastrar no Supabase Auth
-      const { data: authData, error: authError } = await supabaseClient.auth.signUp({
-        email,
-        password
-      })
+      // 1️⃣ Criar usuário no Auth
+      const { data: authData, error: authError } =
+        await supabaseClient.auth.signUp({
+          email,
+          password
+        })
 
       if (authError) {
         msg.textContent = authError.message
@@ -93,27 +94,41 @@
         return
       }
 
-      // 2. Salvar informações na tabela professores
+      // 2️⃣ LOGIN IMEDIATO (ESSENCIAL PARA RLS)
+      const { error: loginError } =
+        await supabaseClient.auth.signInWithPassword({
+          email,
+          password
+        })
+
+      if (loginError) {
+        msg.textContent = 'Erro ao autenticar usuário após cadastro'
+        msg.className = 'text-danger'
+        return
+      }
+
+      // 3️⃣ Inserir dados na tabela professores
       const { error: dbError } = await supabaseClient
         .from('professores')
         .insert([
           {
-            email: email,
-            nome: nome,
-            disciplina: disciplina
+            user_id: authData.user.id,
+            email,
+            nome,
+            disciplina
           }
         ])
 
       if (dbError) {
-        console.error('Erro ao salvar dados:', dbError)
-        msg.textContent = 'Cadastro criado, mas erro ao salvar disciplina'
+        console.error(dbError)
+        msg.textContent = 'Cadastro criado, mas erro ao salvar dados'
         msg.className = 'text-warning'
         return
       }
 
-      msg.textContent = 'Cadastro realizado com sucesso! Você será redirecionado...'
+      msg.textContent = 'Cadastro realizado com sucesso!'
       msg.className = 'text-success'
-      
+
       setTimeout(() => {
         window.location.href = 'loginpro.html'
       }, 2000)
